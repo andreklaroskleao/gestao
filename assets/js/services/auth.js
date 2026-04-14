@@ -21,34 +21,10 @@ import {
 
 import {
   initializeApp,
-  getApps,
   deleteApp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import { auth, db, firebaseConfig } from "../firebase-config.js";
-
-/**
- * ============================================================================
- * AUTH SERVICE
- * ============================================================================
- * Compatível com:
- * - login(email, password)
- * - logout()
- * - logoutUser()
- * - changePassword(currentPassword, newPassword)
- * - onUserSession(callback)
- * - getCurrentUserProfile()
- * - createManagedUser(data)
- * - updateManagedUser(uid, data)
- * - setUserActiveStatus(uid, ativo)
- * - softDeleteManagedUser(uid)
- * - sendResetPassword(email)
- * ============================================================================
- */
-
-/* -------------------------------------------------------------------------- */
-/* Utils                                                                      */
-/* -------------------------------------------------------------------------- */
 
 function isObject(value) {
   return value && typeof value === "object" && !Array.isArray(value);
@@ -155,10 +131,6 @@ function buildFriendlyAuthError(error) {
         : new Error("Ocorreu um erro inesperado na autenticação.");
   }
 }
-
-/* -------------------------------------------------------------------------- */
-/* Login / Sessão                                                             */
-/* -------------------------------------------------------------------------- */
 
 export async function login(email, password) {
   try {
@@ -286,10 +258,6 @@ export function waitForAuthReady() {
   });
 }
 
-/* -------------------------------------------------------------------------- */
-/* Senha                                                                      */
-/* -------------------------------------------------------------------------- */
-
 export async function changePassword(currentPassword, newPassword) {
   const user = auth.currentUser;
 
@@ -332,13 +300,8 @@ export async function sendResetPassword(email) {
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/* Gestão de Usuários                                                         */
-/* -------------------------------------------------------------------------- */
-
 async function createSecondaryAppAndAuth() {
   const appName = `user-creator-${Date.now()}`;
-
   const secondaryApp = initializeApp(firebaseConfig, appName);
   const secondaryAuth = getAuth(secondaryApp);
 
@@ -471,10 +434,6 @@ export async function hardDeleteUserDoc(uid) {
   return true;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Helpers de permissão                                                       */
-/* -------------------------------------------------------------------------- */
-
 export function hasPermission(profile, area) {
   if (!profile || !area) return false;
 
@@ -491,12 +450,9 @@ export function isAdmin(profile) {
   return profile?.tipo === "Gerente" && isUserActive(profile);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Aliases de compatibilidade                                                 */
-/* -------------------------------------------------------------------------- */
-
 export const createUser = createManagedUser;
 export const updateUser = updateManagedUser;
 export const toggleUserStatus = setUserActiveStatus;
 export const deleteUserSoft = softDeleteManagedUser;
 export const forgotPassword = sendResetPassword;
+export const changeCurrentPassword = changePassword;
